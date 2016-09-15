@@ -68,10 +68,6 @@ export class DataTableBody implements OnInit, OnDestroy {
     return !!this.state.options.selectionType;
   }
 
-  constructor(public state: StateService, element: ElementRef) {
-    element.nativeElement.classList.add('datatable-body');
-  }
-
   @HostBinding('style.height')
   get bodyHeight() {
     if (this.state.options.scrollbarV) {
@@ -88,6 +84,10 @@ export class DataTableBody implements OnInit, OnDestroy {
     } else {
       return '100%';
     }
+  }
+
+  constructor(public state: StateService, element: ElementRef) {
+    element.nativeElement.classList.add('datatable-body');
   }
 
   ngOnInit(): void {
@@ -142,7 +142,7 @@ export class DataTableBody implements OnInit, OnDestroy {
     let rowIndex = idxs.first;
 
     let endSpliceIdx = refresh ? this.state.rowCount : idxs.last - idxs.first;
-    this.rows.splice(0, endSpliceIdx);
+    this.rows = this.rows.slice(0, endSpliceIdx);
 
     while (rowIndex < idxs.last && rowIndex < this.state.rowCount) {
       let row = this.state.rows[rowIndex];

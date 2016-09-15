@@ -1,5 +1,5 @@
 /**
- * angular2-data-table v0.4.0 (https://github.com/swimlane/angular2-data-table)
+ * angular2-data-table v0.5.2 (https://github.com/swimlane/angular2-data-table)
  * Copyright 2016
  * Licensed under MIT
  */
@@ -18,6 +18,10 @@ function __decorate(decorators, target, key, desc) {
 
 function __metadata(k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+}
+
+function __param(paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
 }
 
 /**
@@ -723,7 +727,12 @@ var DataTable = (function () {
     };
     DataTable.prototype.onPageChanged = function (action) {
         this.state.setPage(action);
-        this.onPageChange.emit(action.value);
+        this.onPageChange.emit({
+            page: action.value,
+            offset: this.state.options.offset,
+            limit: this.state.pageSize,
+            count: this.state.rowCount
+        });
     };
     DataTable.prototype.onRowSelect = function (event) {
         this.state.setSelected(event);
@@ -834,8 +843,10 @@ var DataTable = (function () {
     DataTable = __decorate([
         _angular_core.Component({
             selector: 'datatable',
+            providers: [StateService],
             template: "\n    <div\n      visibility-observer\n      (onVisibilityChange)=\"adjustSizes()\">\n      <datatable-header\n        (onColumnChange)=\"onColumnChange.emit($event)\">\n      </datatable-header>\n      <datatable-body\n        (onRowClick)=\"onRowClick.emit($event)\"\n        (onRowSelect)=\"onRowSelect($event)\">\n      </datatable-body>\n      <datatable-footer\n        (onPageChange)=\"onPageChanged($event)\">\n      </datatable-footer>\n    </div>\n  "
-        }), 
+        }),
+        __param(0, _angular_core.Host()), 
         __metadata('design:paramtypes', [(typeof (_h = typeof StateService !== 'undefined' && StateService) === 'function' && _h) || Object, (typeof (_j = typeof _angular_core.ElementRef !== 'undefined' && _angular_core.ElementRef) === 'function' && _j) || Object, (typeof (_k = typeof _angular_core.KeyValueDiffers !== 'undefined' && _angular_core.KeyValueDiffers) === 'function' && _k) || Object])
     ], DataTable);
     return DataTable;
@@ -2204,9 +2215,6 @@ var Angular2DataTableModule = (function () {
                 ProgressBar,
                 DataTableBodyRow,
                 DataTableBodyCell
-            ],
-            providers: [
-                StateService
             ],
             exports: [
                 DataTable,
